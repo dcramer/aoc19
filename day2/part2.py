@@ -5,7 +5,6 @@ import sys
 
 def execute(data):
     pos = 0
-    vals = 0
     data_len = len(data)
     while pos < data_len:
         op = data[pos]
@@ -26,15 +25,15 @@ def main(infile):
         data = [int(x) for x in fp.read().split(',')]
 
     target = 19690720
-    while True:
-        for noun, verb in itertools.permutations(range(100), 2):
+    for noun in range(100):
+        for verb in range(100):
             ndata = data.copy()
             ndata[1] = noun
             ndata[2] = verb
             execute(ndata)
             print(noun, '&', verb, '=', ndata[0])
             if ndata[0] == target:
-               print('answer =', 100 * noun * verb)
+               print('answer =', 100 * noun + verb)
                sys.exit(0)
 
 main(sys.argv[1])
