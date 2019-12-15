@@ -12,15 +12,22 @@ def splitop(op):
 
 
 def execute(data, input):
-    def param(data, pos, offset, params):
-        value = data[pos + offset]
+    def instr(offset, params):
         try:
             inst = params[offset - 1]
         except IndexError:
             inst = 0
+        return inst
+
+    def param(data, pos, offset, params):
+        value = data[pos + offset]
+        inst = instr(offset, params)
 
         if inst == 0:
-            return data[value]
+            try:
+                return data[value]
+            except IndexError as exc:
+                raise Exception(f'Cannot find reference {value}') from exc
         if inst == 1:
             return value
         raise NotImplementedError(f'Invalid instruction: {inst}')
@@ -30,18 +37,17 @@ def execute(data, input):
     data_len = len(data)
     while pos < data_len:
         op, params = splitop(data[pos])
-        print(pos, op)
         if op == 99:
             pos += 1
             break
         elif op == 1:
-            data[param(data, pos, 3, params)] = param(data, pos, 1, params) + param(data, pos, 2, params)
+            data[data[pos + 3] if instr(3, params) == 0 else pos + 3] = param(data, pos, 1, params) + param(data, pos, 2, params)
             pos += 4
         elif op == 2:
-            data[param(data, pos, 3, params)] = param(data, pos, 1, params) * param(data, pos, 2, params)
+            data[data[pos + 3] if instr(3, params) == 0 else pos + 3] = param(data, pos, 1, params) * param(data, pos, 2, params)
             pos += 4
         elif op == 3:
-            data[param(data, pos, 1, params)] = input
+            data[data[pos + 1] if instr(1, params) == 0 else pos + 1] = input
             pos += 2
         elif op == 4:
             output = param(data, pos, 1, params)
