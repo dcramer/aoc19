@@ -35,10 +35,10 @@ def execute(data, input):
             pos += 1
             break
         elif op == 1:
-            data[data[pos + 3]] = param(data, pos, 1, params) + param(data, pos, 2, params)
+            data[param(data, pos, 3, params)] = param(data, pos, 1, params) + param(data, pos, 2, params)
             pos += 4
         elif op == 2:
-            data[data[pos + 3]] = param(data, pos, 1, params) * param(data, pos, 2, params)
+            data[param(data, pos, 3, params)] = param(data, pos, 1, params) * param(data, pos, 2, params)
             pos += 4
         elif op == 3:
             data[param(data, pos, 1, params)] = input
